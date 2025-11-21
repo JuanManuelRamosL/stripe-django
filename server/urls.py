@@ -5,10 +5,11 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('register/', views.register),
-    path('login/', views.login),
-    path('payment/create-checkout/', views.create_checkout_session),
-    path('webhook/stripe/', views.stripe_webhook),
-    path('users/', views.list_users),
-    path('anda/', views.anda),
+    path('register/', views.register, name="register"),
+    path('login/', views.login, name="login"),
+
+    path('payment/create-checkout/', views.create_checkout_session, name="create-checkout"),
+    path('webhook/stripe/', views.stripe_webhook, name="stripe-webhook"),
+    path('users/', views.list_users, name="list-users"),
+    path('anda/', views.anda, name="anda"),
 ]
