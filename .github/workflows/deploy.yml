@@ -35,5 +35,6 @@ jobs:
           python manage.py test
 
       - name: Trigger Render Deploy
+        if: success()        # 👈 SOLO si los tests pasaron
         run: |
           curl -X POST "$RENDER_DEPLOY_HOOK"

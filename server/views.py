@@ -116,3 +116,7 @@ def list_users(request):
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def anda(request):
+    return Response({"message": "Anda piola"})
