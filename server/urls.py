@@ -10,6 +10,6 @@ urlpatterns = [
 
     path('payment/create-checkout/', views.create_checkout_session, name="create-checkout"),
     path('webhook/stripe/', views.stripe_webhook, name="stripe-webhook"),
-    path('users/', views.list_users, name="list-users"),
+    path('users/', views.list_users, name="get_all_users"),
     path('anda/', views.anda, name="anda"),
 ]
