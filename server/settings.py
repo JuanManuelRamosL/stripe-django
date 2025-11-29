@@ -31,15 +31,15 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
 
-    # Tus apps
-    "server",   # ejemplo, cambia el nombre a tu app real
+    # Tu app principal
+    "server",
 ]
 
 # ----------------------------------------------------
 #   MIDDLEWARE
 # ----------------------------------------------------
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # Debe ir arriba
+    "corsheaders.middleware.CorsMiddleware",  # IMPORTANTE: debe ir primero o casi primero
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -50,27 +50,19 @@ MIDDLEWARE = [
 ]
 
 # ----------------------------------------------------
-#   CORS (ACEPTA TODO)
+#   CORS (ACEPTAR TODO)
 # ----------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_HEADERS = [
-    "*",
-]
-
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
+CORS_ALLOW_HEADERS = ["*"]
+CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
 
 # ----------------------------------------------------
-#   TEMPLATES
+#   URLS Y TEMPLATES
 # ----------------------------------------------------
+ROOT_URLCONF = "server.urls"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -86,8 +78,10 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = "server.wsgi.application"
+
 # ----------------------------------------------------
-#   BASE DE DATOS (SQLite por defecto)
+#   BASE DE DATOS
 # ----------------------------------------------------
 DATABASES = {
     "default": {
@@ -97,21 +91,13 @@ DATABASES = {
 }
 
 # ----------------------------------------------------
-#   AUTH PASSWORD VALIDATION
+#   VALIDACIÓN DE PASSWORDS
 # ----------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    { "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator" },
+    { "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator" },
+    { "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator" },
+    { "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator" },
 ]
 
 # ----------------------------------------------------
@@ -123,10 +109,22 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------------------------------------
-#   STATIC FILES
+#   ARCHIVOS ESTÁTICOS
 # ----------------------------------------------------
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# ----------------------------------------------------
+#   CUSTOM USER MODEL
+# ----------------------------------------------------
+AUTH_USER_MODEL = "server.User"
+
+# ----------------------------------------------------
+#   STRIPE
+# ----------------------------------------------------
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 # ----------------------------------------------------
 #   DJANGO REST FRAMEWORK
