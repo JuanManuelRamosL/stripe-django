@@ -2,6 +2,7 @@ asgiref==3.10.0
 certifi==2025.11.12
 charset-normalizer==3.4.4
 Django==5.2.8
+django-cors-headers==4.6.0
 djangorestframework==3.16.1
 git-filter-repo==2.47.0
 gunicorn==23.0.0
@@ -13,4 +14,4 @@ stripe==14.0.0
 typing_extensions==4.15.0
 tzdata==2025.2
 urllib3==2.5.0
-python-dotenv
+python-dotenv==1.0.1

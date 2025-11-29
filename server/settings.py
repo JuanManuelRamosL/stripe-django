@@ -30,7 +30,6 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     "rest_framework",
-     "rest_framework.authtoken",
-        "server",
+    "rest_framework.authtoken",
+    "server",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # ¡DEBE estar primero!
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,7 +134,6 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
-
 AUTH_USER_MODEL = "server.User"
 
 REST_FRAMEWORK = {
@@ -144,3 +144,89 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ]
 }
+
+# =============================================================================
+# CONFIGURACIÓN CORS PARA ACEPTAR TODOS LOS DOMINIOS
+# =============================================================================
+
+# Permitir todos los orígenes (dominos)
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Permitir credenciales (cookies, headers de autenticación)
+CORS_ALLOW_CREDENTIALS = True
+
+# Headers permitidos
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'token',  # Si usas tokens personalizados
+]
+
+# Métodos HTTP permitidos
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# URLs que están exentas de CORS (opcional)
+CORS_URLS_REGEX = r'^/.*$'  # Aplica a todas las URLs
+
+# Headers expuestos al frontend
+CORS_EXPOSE_HEADERS = [
+    'content-type',
+    'authorization',
+]
+
+# Configuración adicional para preflight requests
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 horas
+
+# =============================================================================
+# CONFIGURACIÓN ADICIONAL DE SEGURIDAD (Recomendada)
+# =============================================================================
+
+# Para desarrollo está bien, en producción considera restringir
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://stripe-django-v3i3.onrender.com",
+    # Agrega aquí otros dominios que uses
+]
+
+# Si necesitas manejar CSRF con tu frontend
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False  # Para que React pueda leerlo si es necesario
+SESSION_COOKIE_HTTPONLY = True
+
+# =============================================================================
+# CONFIGURACIÓN PARA RENDER.COM
+# =============================================================================
+
+# Configuración de base de datos para Render (si usas PostgreSQL)
+import os
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+
+# Configuración de static files para Render
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
