@@ -13,7 +13,10 @@ SECRET_KEY = os.getenv("SECRET_KEY", "cambiame-por-una-clave-real")
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]  # Acepta cualquier host
+ALLOWED_HOSTS = ["*"]   # Acepta cualquier origen (solo recomendado para desarrollo)
+
+# Render HTTPS redirect fixer (IMPORTANTE)
+SECURE_SSL_REDIRECT = False
 
 # ----------------------------------------------------
 #   APLICACIONES INSTALADAS
@@ -39,24 +42,45 @@ INSTALLED_APPS = [
 #   MIDDLEWARE
 # ----------------------------------------------------
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # IMPORTANTE: debe ir primero o casi primero
+    # DEBE IR PRIMERO o el preflight OPTIONS falla
+    "corsheaders.middleware.CorsMiddleware",
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+
+    # CSRF puede bloquear preflight → lo configuramos abajo
     "django.middleware.csrf.CsrfViewMiddleware",
+
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # ----------------------------------------------------
-#   CORS (ACEPTAR TODO)
+#   CORS TOTALMENTE ABIERTO
 # ----------------------------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = ["*"]
-CORS_ALLOW_METHODS = ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
+# ----------------------------------------------------
+#   CSRF (IMPORTANTE PARA EVITAR ERRORES)
+# ----------------------------------------------------
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+    "http://localhost:5173",
+]
 
 # ----------------------------------------------------
 #   URLS Y TEMPLATES
